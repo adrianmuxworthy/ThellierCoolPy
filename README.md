@@ -1,27 +1,50 @@
 # ThelllierCoolPy
 A cooling-rate correction tool for Thellier-type paleointensity data. Written in Python.
 
-Instructions:
+ThellierCoolPy can be run in Google's Colab or Jupyter. Colab has the advantage that everything is already installed, whilst Jupyter is a little more involved and one of the packages (numba) currently (August 2021) is not compatable with Apple's Silicon M1 processor released in January 2021. We will update this when the package becomes available.
 
-To run locally on Jupyter notebook:
+Instructions for installation:
 
-Python packages required to run this program:
+**Colab:**
 
-numpy (pip install numpy) numba (pip install numba) matplotlib (pip install -U matplotlib) scipy (pip install scipy) ipywidgets (pip install ipywidgets) ipyfilechooser (pip install ipyfilechooser)
+Colab works best in a Chrome browswer. D
 
-codecs (pip install codec) random (pip install random2) re (pip install regex) tkinter (pip install tk)
+Download 
 
-Input file types:
 
-Ms-T data as no headers temp Ms seperated by comma or space or tab
 
-Thellier (.tdt) files with header seperated by comma, space or tab, no space within in sample names
+**Jupyter** (installed via Anaconda):
 
-To use the program:
+Download 
 
-Click on each cell in the Jupyter notebook following the instructions above the cell
+To run locally on Jupyter notebook, the following packages are required: 
 
-The model uses a full-wdith half maxmiumm method to extrapolate the FORC distribtion to SF = 0. as outlined in Muxworthy and Heslop 2011.
+numpy, numba, matplotlib, scipy, ipywidgets, ipyfileschooser, codecs, random2, regex, tk
+
+First, you may need to upgrade your version of pip using:
+
+python -m pip install --upgrade pip
+
+Second, these can be  installed via (just cut and paste):
+
+pip install numpy numba scipy ipywidgets ipyfileschooser codecs random2 regex tk
+
+pip install -U matplotlib
+
+Depending on your OS, codecs maybe installed as default.
+
+
+**Input file types:**
+
+Examples of the input data formats are shown in the example folder:
+
+1) Ms-T data has no headers, simply temperature and Ms seperated by comma, space or tab.
+2) Thellier data is in ThellierTool data format (.tdt). That is, files with a header seperated by comma, space or tab, no space within in sample names.
+3) FORC data. This is FORC data output format from a Princeton or Lakeshore instrument.
+
+**To use the program**
+
+For both Colab and Jupyter, click on each following the instructions above each cell. The model uses a full-wdith half maxmiumm method to extrapolate the FORC distribtion to SF = 0, as outlined in Muxworthy and Heslop (2011). 
 
 When a noisy FORC diagram is used, anomalous FWHM can be produced and these values can be removed.
 

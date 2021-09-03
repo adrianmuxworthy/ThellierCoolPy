@@ -40,8 +40,7 @@ python -m pip install --upgrade pip
 
 Second, these packages can be  installed via (just cut and paste):
 
-1. pip install numpy numba scipy ipywidgets ipyfileschooser  random2 regex tk
-2. pip install -U matplotlib
+pip install numpy numba matplotlib scipy ipywidgets ipyfileschooser  random2 regex tk
 
 Depending on your OS, codecs may be installed as default.
 

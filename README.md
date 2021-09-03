@@ -32,7 +32,7 @@ We assume that Jupyter is already installed, if not please use Colab.
 
 To run locally on Jupyter notebook, the following packages need to be installed: 
 
-numpy, numba, matplotlib, scipy, ipywidgets, ipyfileschooser, codecs, random2, regex, tk
+numpy, numba, matplotlib, scipy, ipywidgets, ipyfileschooser,  random2, regex, tk
 
 First, you may need to upgrade your version of pip using:
 
@@ -40,7 +40,7 @@ python -m pip install --upgrade pip
 
 Second, these packages can be  installed via (just cut and paste):
 
-1. pip install numpy numba scipy ipywidgets ipyfileschooser codecs random2 regex tk
+1. pip install numpy numba scipy ipywidgets ipyfileschooser  random2 regex tk
 2. pip install -U matplotlib
 
 Depending on your OS, codecs may be installed as default.

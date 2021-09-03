@@ -1,15 +1,22 @@
 # ThelllierCoolPy
 A cooling-rate correction tool for Thellier-type paleointensity data. Written in Python.
 
-ThellierCoolPy can be run in Google's Colab or Jupyter. Colab has the advantage that everything is already installed, whilst Jupyter is a little more involved and one of the packages (numba) currently (August 2021) is not compatable with Apple's Silicon M1 processor released in January 2021. We will update this when the package becomes available.
+ThellierCoolPy can be run in Google's Colab or Jupyter. Colab has the advantage that in runs in the cloud and everything is already installed (**no installations needed!**), whilst Jupyter is a little more involved and one of the required packages (numba) currently (August 2021) is not compatable with Apple's Silicon M1 processor released in January 2021. We will update this when the package becomes available.
 
-Instructions for installation and usage:
+**Experimental data input file formats**
+
+Examples of the input data formats are shown in the example folder:
+
+1) Ms-T data has no headers, simply temperature and Ms seperated by comma, space or tab.
+2) Thellier data is in ThellierTool data format (.tdt). That is, files with a header seperated by comma, space or tab, no space within in sample names.
+3) FORC data. This is FORC data output format from a Princeton or Lakeshore instrument.
+
+
+**Instructions for installation and usage**
 
 **Colab:**
 
-Download Colab works best in a Chrome browswer. 
-
-Download 
+Download all the files from the Colab folder. Run Colab (just search for Colab). Colab works best in a Google Chrome browswer. 
 
 To run on the cloud using Google Colab:
 
@@ -21,7 +28,7 @@ The corrected Thellier files can then be downloaded from Google Colab.
 
 **Jupyter** (installed via Anaconda):
 
-Download 
+Assuming Jupyter is installed. Download 
 
 To run locally on Jupyter notebook, the following packages are required: 
 
@@ -40,13 +47,7 @@ pip install -U matplotlib
 Depending on your OS, codecs maybe installed as default.
 
 
-**Input file types:**
 
-Examples of the input data formats are shown in the example folder:
-
-1) Ms-T data has no headers, simply temperature and Ms seperated by comma, space or tab.
-2) Thellier data is in ThellierTool data format (.tdt). That is, files with a header seperated by comma, space or tab, no space within in sample names.
-3) FORC data. This is FORC data output format from a Princeton or Lakeshore instrument.
 
 **To use the program**
 

@@ -1,10 +1,6 @@
 # ThelllierCoolPy
 A cooling-rate correction tool for Thellier-type paleointensity data. Written in Python.
 
-ThellierCoolPy is described in Muxworthy and Baker (2021). If you use ThelllierCoolPy in your research, please cite:
-
-Muxworthy, A.R. and Baker, E.B. (2021), ThellierCoolPy: A cooling-rate correction tool for paleointensity data, submitted to G-Cubed.
-
 ThellierCoolPy can be run in Google's Colab or Jupyter. Colab has the advantage that in runs it the cloud and everything is already installed (**no installations needed!**), whilst Jupyter is a little more involved and one of the required packages (numba) currently (August 2021) is not compatable with Apple's Silicon M1 processor released in January 2021. We will update this when the package becomes available.
 
 
@@ -52,4 +48,8 @@ Depending on your OS, codecs may be installed as default.
 Launch Jupyter, and open ThellierCoolPy_Jupyter.ipynb.  Run each cell (SHIFT + RETURN) following the instructions above each cell. The model uses a full-wdith half maxmiumm method to extrapolate the FORC distribtion to SF = 0, as outlined in Muxworthy and Heslop (2011).  When a noisy FORC diagram is used, anomalous FWHM can be produced and these values can be removed. The cooling-rate corrected Thellier files are saved as original_file_name_U.tdt in the same folder as the original data.
 
 
+**Further information**
 
+ThellierCoolPy is described in Muxworthy and Baker (2021). If you use ThelllierCoolPy in your research, please cite:
+
+Muxworthy, A.R. and Baker, E.B. (2021), ThellierCoolPy: A cooling-rate correction tool for paleointensity data, submitted to G-Cubed.

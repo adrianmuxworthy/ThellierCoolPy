@@ -3,6 +3,7 @@ A cooling-rate correction tool for Thellier-type paleointensity data. Written in
 
 ThellierCoolPy can be run in Google's Colab or Jupyter. Colab has the advantage that in runs in the cloud and everything is already installed (**no installations needed!**), whilst Jupyter is a little more involved and one of the required packages (numba) currently (August 2021) is not compatable with Apple's Silicon M1 processor released in January 2021. We will update this when the package becomes available.
 
+
 **Experimental data input file formats**
 
 Examples of the input data formats are shown in the example folder:
@@ -12,19 +13,16 @@ Examples of the input data formats are shown in the example folder:
 3) FORC data. This is FORC data output format from a Princeton or Lakeshore instrument.
 
 
+
 **Instructions for installation and usage**
 
 **Colab:**
 
-Download all the files from the Colab folder. Run Colab (just search for Colab). Colab works best in a Google Chrome browswer. 
+Download all the files from the github Colab folder to a folder of your choice. Run Colab (just search for Colab in browser or enter https://colab.research.google.com/). Colab works best in a Google Chrome browswer. 
 
-To run on the cloud using Google Colab:
+To run, use the upload option to load ThelllierTool_colab.ipynb. The Colab version requires that the Thellier data, Ms-T curves and FORC diagram are in the same folder as ThellierCoolFunc_colab.py. These are uploaded to Colab within during processing within the notebook. To run the program, click on the instructions above each cell.  The model uses a full-wdith half maxmiumm method to extrapolate the FORC distribtion to SF = 0, as outlined in Muxworthy and Heslop (2011).  When a noisy FORC diagram is used, anomalous FWHM can be produced and these values can be removed. The cooling-rate corrected Thellier files are saved as original_file_name_U.tdt, and can be downloaded from Colab.
 
-The cooling rate correction can also be ran using Google Colab by downloading the colab versions of ThellierCoolPy and ThellierCoolfunc. This requires the Thellier plots, Ms-T curves and FORC diagram to be in the same folder as ThellierCoolFunc_colab to be downloaded onto the cloud for processing within the notebook. 
 
-An example of a colab input folder is the zipped folder: colab_files_example.
-
-The corrected Thellier files can then be downloaded from Google Colab.
 
 **Jupyter** (installed via Anaconda):
 
@@ -40,20 +38,12 @@ python -m pip install --upgrade pip
 
 Second, these can be  installed via (just cut and paste):
 
-pip install numpy numba scipy ipywidgets ipyfileschooser codecs random2 regex tk
-
-pip install -U matplotlib
+1. pip install numpy numba scipy ipywidgets ipyfileschooser codecs random2 regex tk
+2. pip install -U matplotlib
 
 Depending on your OS, codecs maybe installed as default.
 
-
-
-
-**To use the program**
-
-For both Colab and Jupyter, click on each following the instructions above each cell. The model uses a full-wdith half maxmiumm method to extrapolate the FORC distribtion to SF = 0, as outlined in Muxworthy and Heslop (2011).  When a noisy FORC diagram is used, anomalous FWHM can be produced and these values can be removed.
-
-The cooling-rate corrected Thellier files are saved as original_file_name_U.tdt in the same folder.
+Open ThellierCoolPy_jupyter.ipynb.  Click on each following the instructions above each cell. The model uses a full-wdith half maxmiumm method to extrapolate the FORC distribtion to SF = 0, as outlined in Muxworthy and Heslop (2011).  When a noisy FORC diagram is used, anomalous FWHM can be produced and these values can be removed. The cooling-rate corrected Thellier files are saved as original_file_name_U.tdt in the same folder as the original data.
 
 
 

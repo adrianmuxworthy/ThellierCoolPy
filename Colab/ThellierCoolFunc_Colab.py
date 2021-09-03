@@ -1817,7 +1817,7 @@ def pop_hys(num_hys, X, V, SF):
 
      
     
-@jit(nopython = True, parallel=True)
+@jit(nopython = True)
 def block_loc(var_1, hys, blockg, boltz):
 
     #unpack var_1
@@ -1933,7 +1933,7 @@ def block_loc(var_1, hys, blockg, boltz):
     return hfstore, histore, boltz, blocktemp  
 
 
-@jit(nopython = True, parallel=True)
+@jit(nopython = True)
 def block_val(hys, histore, hfstore, blocktemp, beta, num_hyss, boltz, blockg, field):
    
     i=0

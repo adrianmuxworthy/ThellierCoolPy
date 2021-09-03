@@ -1363,9 +1363,6 @@ def plot_fwhm(X):
 
             fwhmlist[i] = float(m*SFlist[i] + b)
 
-    fwhmlist = np.array(fwhmlist)
-    fwhmlist = fwhmlist.astype(np.float) 
-    X['fwhmlist'] = fwhmlist
 
     X['fwhmlist'] = fwhmlist
 
@@ -1378,59 +1375,81 @@ def check_fwhm(X):
     answer2 = None
     fwhmlist = X['fwhmlist']
     maxSF1 = X['maxSF1']
-  
     while answer not in ("yes", "no"):
-        answer = input("Are any the FWHM unreliable? Enter yes or no: ")
+        answer = input("Are any of the FWHM unreliable? Enter yes or no: ")
         if (answer == "yes"):
-   
-            while True:
-                sf_pick = (input("Which SF is unrealiable and needs to be removed?:" ))
-       
-                while answer2 not in ("yes", "no"):
-                    answer2 = input("Are any other FWHM unreliable? Enter yes or no: ")
-                    print(answer2)
-                    if (answer2 == "yes"):
-                        print(answer2)
-                        k=1
-                        while ( k != 0):
-                            try:
-                                sf_pick2 = (input("Which other SF is unrealiable and needs to be removed?:" ))
-                                sf_pick2 = int(sf_pick2)
-                                k = 0
-                            except ValueError:
-                                print('Not an interger')
-                   
-                            
+            sf_int = 0
+            while (sf_int == 0):
                 try:
-                 
-                    sf_pick = int(sf_pick)
+                    sf_pick = (input("Which SF is unrealiable and needs to be removed?:" ))
+                    sf_pick = int(sf_pick) #ask for interger and check it is an interger, if not ask again
+                    sf_int = 1
 
                     if (sf_pick >= 2) and (sf_pick <= maxSF1):
+                        sf_int = 1
 
-                        fwhmlist[sf_pick-2] = 'che' 
+                    else:
+                        sf_int = 0
+                        print('Not an interger between 2 and 5. Please input an interger between 2 and 5.')
+
+                except ValueError:
+                    print('Not an interger. Please input an interger between 2 and 5.')
+
+
+            while answer2 not in ("yes", "no"):
+                answer2 = input("Are any other FWHM unreliable? Enter yes or no: ")
+        
+                if (answer2 == "yes"):
+                    sf_int2 = 0
+                    while (sf_int2 == 0):
+                        try:
+                            sf_pick2 = (input("Which other SF is unrealiable and needs to be removed?:" ))
+                            sf_pick2 = int(sf_pick2) #ask for interger and check it is an interger, if not ask again
+                            sf_int2 = 1
+ 
+                            if (sf_pick2 >= 2) and (sf_pick2 <= maxSF1):
+                                sf_int2 = 1
+
+                            else:
+                                sf_int2 = 0
+                                print('Not an interger between 2 and 5. Please input an interger between 2 and 5.')
+
+                        except ValueError:
+                            print('Not an interger. Please input an interger between 2 and 5.')
+                        
+
+
+                elif (answer2 == "no"):
+                    print(answer2)
+
+                
+                elif (isinstance(answer2, str)):
+                    print("Please enter yes or no.")
+                    
+                
+            
+
+            fwhmlist[sf_pick-2] = 'che' 
                         
               
-                        if (answer2 == "yes") and (sf_pick2 >= 2) and (sf_pick2 <= maxSF1):
+            if (answer2 == "yes"):
 
-                            fwhmlist[sf_pick2-2] = 'che' 
-                        X['fwhmlist'] = fwhmlist
+                fwhmlist[sf_pick2-2] = 'che' 
+            X['fwhmlist'] = fwhmlist
 
-                        X = plot_fwhm(X) 
-
-                        break
-                except ValueError:
-                    print('Not an interger')
-                    True
-
+            X = plot_fwhm(X) 
             
-                
+
         elif answer == "no":
         
             X = plot_fwhm(X) 
-            break 
-        else:
+           
+        elif (isinstance(answer, str)):
             print("Please enter yes or no.")
- 
+   
+    fwhmlist = np.array(fwhmlist)
+    X['fwhmlist'] = fwhmlist
+
     
     return(X)
         

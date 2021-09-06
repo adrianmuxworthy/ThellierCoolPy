@@ -6,6 +6,8 @@ from math import acos, pi, degrees, sin, cos, sqrt, log, log10, tanh, remainder
 from scipy.interpolate import interp2d
 import random
 import codecs as cd
+from zipfile import ZipFile
+import shutil
 
 import ipywidgets as widgets
 from ipywidgets import VBox, HBox
@@ -19,7 +21,6 @@ from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 import matplotlib as matplotlib
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 from scipy.interpolate import griddata
-from ipyfilechooser import FileChooser
 
 
 mu0 = 4*pi*1e-7
@@ -38,6 +39,159 @@ afone = 1
 afzero = 0
 
 
+#find and upzip zipped file 
+def open_zip_file():
+    path = os.getcwd()
+    try:
+        os.mkdir('raw_data')
+    except:
+        print('This step has already been carried out and a raw_data folder exists. To add more files, restart the kernel and re-run the previous cells too.')
+    for item in os.listdir(path): # loop through items in dir
+        
+        if item.endswith('.zip'): # check for ".zip" extension
+            file_name = os.path.abspath(item) # get full path of files
+            zip_ref = ZipFile(file_name) # create zipfile object
+            zip_ref.extractall(os.path.join(path+ os.sep,'raw_data')) # extract file to dir
+            zip_ref.close() # close file
+            #os.remove(file_name) # delete zipped file
+    return
+
+def find_FORC_MsT(X, V):
+    path = os.getcwd()
+    path = os.path.join(path+os.sep,'raw_data')
+    forc_file = []
+    for root, dir, file in os.walk(path):
+        i =0
+        for f in file:
+            if re.match('.*.frc', f):
+                forc_file.append(os.path.join(root + os.sep,f))
+                i+=1
+    X['fn'] = forc_file[0]
+    print('Location of the FORC file: ', X['fn'])  
+
+    mst_file = []
+    for root, dir, file in os.walk(path):
+        i =0
+        for f in file:
+            if re.match('.*.dat', f):
+                mst_file.append(os.path.join(root + os.sep,f))
+                i+=1
+
+    if (len(mst_file) != 0):
+        curve = True # have Ms-T curve 
+        X['ms_file'] = mst_file[0]
+        print('Location of the Ms-T data file: ', X['ms_file'])
+
+
+        temp_ms = []
+        lista_ms = []
+
+        with open(X['ms_file']) as my_file:
+ 
+            for line in my_file:
+                line_s = line.split()
+                temp_ms.append(float(line_s[0]))
+                lista_ms.append(float(line_s[1]))
+
+        temp_ms = np.array(temp_ms)
+        list_ms = np.array(lista_ms)
+    
+        list_ms = np.where(list_ms < 0.0, 0.0, list_ms)
+        V['temp_ms'] = temp_ms + 273
+        V['list_ms'] = list_ms
+        idx_rt = (np.abs(temp_ms - 27)).argmin()
+        ms_R = list_ms[idx_rt]
+        V['ms_R'] = ms_R 
+        
+        i=0
+        for i in range(len(list_ms)):
+            if (list_ms[i] == 0):
+                curie_idx = i-1
+                break
+            i+=1
+        curie_t = temp_ms[curie_idx] 
+        
+        V['curie_t'] = curie_t
+    else:
+        print('No Ms-T curve data file could be found.')
+        curve = False
+
+
+    tdt_file = []
+    print('Thellier files (.tdt) found:')
+    i =0
+    for root, dir, file in os.walk(path):        
+        for f in file:
+            if re.match('.*.tdt', f):
+                tdt_file.append(os.path.join(root + os.sep,f))
+                print(f)
+                i+=1
+    if (i == 0):
+        print('No Thellier files (.tdt) have been found.')
+
+    return X, V, curve   
+
+def user_input(X, V, curve):
+    lab_t = 0
+    while (lab_t == 0):
+        try:
+            lab_cool_time = (input("Input the lab cooling time in hours:" )) 
+            lab_cool_time = float(lab_cool_time) #ask for interger and check it is an interger, if not ask again
+            lab_t = 1
+        except ValueError:
+            print('Not a number. Please input an number.')
+            lab_t = 0
+
+    nat_t = 0
+    while (nat_t == 0):
+        try:
+            nature_cool_time = (input("Input the natural cooling time in hours:" )) 
+            nature_cool_time = float(nature_cool_time) #ask for interger and check it is an interger, if not ask again
+            nat_t = 1
+        except ValueError:
+            print('Not a number. Please input an number.')
+            nat_t = 0
+    X['lab_cool'] = lab_cool_time
+    X['nat_cool'] = nature_cool_time
+
+    #FORC limits
+    hc_l = 0
+    while (hc_l == 0):
+        try:
+            max_input_hc = (input("Set maximum hc (mT) using the above FORC diagram:" ))
+            max_input_hc = float(max_input_hc) #ask for interger and check it is an interger, if not ask again
+            hc_l = 1
+        except ValueError:
+            print('Not a number. Please input an number.')
+            hc_l = 0
+
+    hi_l = 0
+    while (hi_l == 0):
+        try:
+            max_input_hi = (input("Set absolute maximum hi (mT) using the above FORC diagram:" ))
+            max_input_hi = float(max_input_hi) #ask for interger and check it is an interger, if not ask again
+            hi_l = 1
+        except ValueError:
+            print('Not a number. Please input an number.')
+            hi_l = 0
+    X['reset_limit_hc'] = float(max_input_hc)
+    X['reset_limit_hi'] = float(max_input_hi)
+
+
+    #if no Ms-T curve use this 
+    if (curve == False):
+        c_l = 0
+        while (c_l == 0):
+            try:
+                curie_t = (input("Input Curie temperature in \xb0C:" ))
+                curie_t = float(curie_t) #ask for interger and check it is an interger, if not ask again
+                c_l = 1
+            except ValueError:
+                print('Not a number. Please input an number.')
+                c_l = 0
+        V['curie_t'] = curie_t #if no Ms-T curve - set Curie T here        
+
+    return X,V
 
 
 
@@ -1134,6 +1288,7 @@ def plot_sample_FORC(x, y, z, SF, sample_name):
     return     
     
 def plot_sample_FORC2(x, y, z, SF, sample_name, xm, ym2):
+    path = os.getcwd() #current directory
     z = z[SF]
     zn = np.copy(z)
     
@@ -1156,8 +1311,14 @@ def plot_sample_FORC2(x, y, z, SF, sample_name, xm, ym2):
 
     cbar.ax.tick_params(labelsize=12)
     plt.title('FORC diagram for sample {}, SF = {}'.format(sample_name, SF))
-    plt.savefig('FORC_diagram_sample_{}_SF_{}.pdf'.format(sample_name,SF), bbox_inches='tight')
+    plt.savefig(os.path.join(path+ os.sep,'processed_data','{}.pdf'.format(sample_name,SF)), bbox_inches='tight')
     plt.close()
+
+    #zip up file 
+    
+    shutil.make_archive('processed_data', 'zip', 'processed_data')
+    shutil.rmtree('processed_data') 
+
     return         
     
 
@@ -1274,11 +1435,10 @@ def find_fwhm(X, SF, sample_name):
 
     half = max(fwRho_c)/2.0
     plt.plot([r0, r1], [half, half], label = SF)
-    plt.xlabel('Hu')
+    plt.xlabel('$\mathrm{h_{s}}$ (mT)')
     plt.ylabel('FORC weighting')
     plt.legend()
-    
-    plt.title('Plot of the cross sections of the FWHM')
+    plt.title('Plot of the cross sections of the FWHM at each smoothing factor')
 
     plt.show
     X['fwhmlist'] = fwhmlist
@@ -1309,7 +1469,7 @@ def plot_fwhm_1(X):
 
     b, m = polyfit(polySF, polyfwhm, 1)
     X['b'] = b
-    plt.title('FWHM plot with all points')
+    plt.title('Smoothing factor (SF) vs FWHM using SF 2-5')
     plt.xlabel('SF')
     plt.ylabel('FWHM')
     plt.plot(st_line_SFlist, b + m * st_line_SFlist, '-')
@@ -1354,7 +1514,7 @@ def plot_fwhm(X):
     X['b'] = b
     plt.xlabel('SF')
     plt.ylabel('FWHM')
-    plt.title('FWHm plot with accepted points')
+    plt.title('SF versus FWHM plot with the accepted SFs')
     plt.plot(st_line_SFlist, b + m * st_line_SFlist, '-')
 
     plt.show 
@@ -2119,13 +2279,20 @@ def fix_files(V):
     temp_c = V['temp_h'][0][:track2] - 273
     m_ratio_av = V['m_ratio_av']
     files_in = []
-    for file in os.listdir():
+    file_name_only = []
+    path = os.getcwd() #current directory 
 
-        if re.match('.*\.tdt', file):
+    try:
+        os.mkdir('processed_data')
+    except:
+        print('This step has already been carried out and a processed_data folder exists. To add more files, restart the kernel and re-run the previous cells too.')
+    print('Corrected Thellier files:')
+    for root, dir, file in os.walk(path):
+        for f in file:
 
-            files_in.append(file)
-
-
+            if re.match('.*.tdt', f):
+                files_in.append(os.path.join(root + os.sep,f))
+                file_name_only.append(f)
     for i in range(len(files_in)):
         name_in = []
         intensity_in = []
@@ -2172,6 +2339,7 @@ def fix_files(V):
             zt=np.sin(inc_in_a*pi/180.0)
 
 
+
             j=0
             for j in range(len(temp_in_a)):
                 if (str(temp_in_a[j]).endswith('.1')) or (str(temp_in_a[j]).endswith('.2')):
@@ -2188,7 +2356,7 @@ def fix_files(V):
                  
                     temp_out_field = float(temp_in_a[loc_out])
 
-                    cf_loc1 = (np.abs((temp_c - temp_in_field))).argmin() #closest temp from my acquisition curves - sae indicies as array
+                    cf_loc1 = (np.abs((temp_c - temp_in_field))).argmin() 
                     if ((temp_c[cf_loc1]) > temp_in_field):
                         cf_loc2 = cf_loc1-1
                     else:
@@ -2206,8 +2374,8 @@ def fix_files(V):
                 j+=1
 
 
-            file_out_name  = files_in[i][:(len(files_in[i])-4)]
-
+            file_out_name  = os.path.join(path+ os.sep,'processed_data',file_name_only[i][:(len(file_name_only[i])-4)])
+            print(file_name_only[i][:(len(file_name_only[i])-4)]+'_U.tdt')
             f = open('{}_U.tdt'.format(file_out_name), 'w')
             f.write('Thellier-tdt' + "\n")
             f.write(str(col1) + "\t" + str(col2) + "\t" + str(col3) + "\t" + str(col4) + "\t" + str(col5) + '\n') 
@@ -2215,7 +2383,7 @@ def fix_files(V):
             for k in range(len(inc_in)):
                 f.write(name_in[k] + "\t" + str("{:.1f}".format(temp_in[k])) +  "\t" + str("{:.12f}".format(intensity_out[k])) + "\t" + str(dec_in[k]) + "\t" + str(inc_in[k]) + "\n")
             f.close()
-
+            
     return
     
 def TRM_acq(X, V, curve):
